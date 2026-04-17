@@ -1,73 +1,49 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🌼 README Introduction (English, polished, portfolio‑ready)
 
-Currently, two official plugins are available:
+## **About This Project**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+ForgetMeNot is a small but meaningful productivity app I created to support people who often lose focus, forget small tasks, or struggle to maintain cognitive flow during busy days. As someone who values clarity and gentle guidance, I wanted to build an app that feels friendly, simple, and emotionally supportive rather than overwhelming.
 
-## React Compiler
+This project is also part of my journey as a growing full‑stack developer. I built it to practice real‑world development skills, improve my understanding of React architecture, and learn how to design apps that are both functional and comforting to use.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## **Why I Built It**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+I wanted to create an app that:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- helps users capture quick memos before they forget  
+- supports task management in a clean, distraction‑free way  
+- encourages cognitive flow recovery through simple interactions  
+- feels warm and approachable, not cold or mechanical  
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+ForgetMeNot is inspired by the idea that small reminders can make a big difference in someone’s day.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## **Tech Stack**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+This project is built with:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **React + TypeScript** — for predictable, scalable UI development  
+- **Vite** — for fast development and modern tooling  
+- **Zustand** — for lightweight and intuitive state management  
+- **TailwindCSS** — for clean, responsive styling  
+- **React Router** — for page navigation  
+
+I chose these tools because they help me write clean code, understand component architecture, and build apps that feel modern and responsive.
+
+---
+
+## **What I Hope to Build Next**
+
+ForgetMeNot is still growing. In the future, I hope to add:
+
+- a mobile‑friendly “pre‑departure checklist”  
+- a character‑driven flow recovery guide  
+- customizable reminders  
+- a more playful and HARU‑inspired UI  
+- better accessibility and real‑world usability  
+
+My goal is to turn this into a gentle companion app that supports users in their daily routines.
