@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 
 interface Category {
   name: string;
-  count: number;
   memos: string[];
 }
 
@@ -15,7 +14,6 @@ interface FlowStore {
   deleteCategories: (names: string[]) => void;
   renameCategory: (oldName: string, newName: string) => void;
 
-  increaseCategoryCount: (categoryName: string) => void;
   addMemoToCategory: (categoryName: string, memoText: string) => void;
   removeMemoFromCategory: (categoryName: string, memoText: string) => void;
 }
@@ -24,17 +22,17 @@ export const useFlowStore = create<FlowStore>()(
   persist(
     (set) => ({
       categories: [
-        { name: "Household", count: 5, memos: [] },
-        { name: "Ideas", count: 12, memos: [] },
-        { name: "Shopping", count: 3, memos: [] },
-        { name: "Emotions", count: 7, memos: [] },
+        { name: "Household", memos: [] },
+        { name: "Ideas", memos: [] },
+        { name: "Shopping", memos: [] },
+        { name: "Emotions", memos: [] },
       ],
 
       setCategories: (newCats) => set({ categories: newCats }),
 
       addCategory: (name) =>
         set((state) => ({
-          categories: [...state.categories, { name, count: 0, memos: [] }],
+          categories: [...state.categories, { name, memos: [] }],
         })),
 
       deleteCategories: (names) =>
@@ -51,13 +49,6 @@ export const useFlowStore = create<FlowStore>()(
           ),
         })),
 
-      increaseCategoryCount: (categoryName) =>
-        set((state) => ({
-          categories: state.categories.map((c) =>
-            c.name === categoryName ? { ...c, count: c.count + 1 } : c
-          ),
-        })),
-
       addMemoToCategory: (categoryName, memoText) =>
         set((state) => ({
           categories: state.categories.map((c) =>
@@ -71,11 +62,7 @@ export const useFlowStore = create<FlowStore>()(
         set((state) => ({
           categories: state.categories.map((c) =>
             c.name === categoryName
-              ? {
-                  ...c,
-                  memos: c.memos.filter((m) => m !== memoText),
-                  count: c.count - 1,
-                }
+              ? { ...c, memos: c.memos.filter((m) => m !== memoText) }
               : c
           ),
         })),

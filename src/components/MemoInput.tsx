@@ -19,11 +19,11 @@ export default function MemoInput() {
         placeholder="Write a quick memo..."
         onChange={(e) => setText(e.target.value)}
         className="flex-1 px-4 py-2 rounded-lg border border-gray-300 bg-white
-                   focus:outline-none focus:ring-2 focus:ring-blue-300"
+             focus:outline-none focus:ring-2 focus:ring-[#6BAF7C]"
       />
       <button
         onClick={handleAdd}
-        className="px-4 py-2 bg-blue-400 text-white rounded-lg"
+        className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg"
       >
         Add
       </button>

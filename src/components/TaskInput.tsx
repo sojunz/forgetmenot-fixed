@@ -23,7 +23,7 @@ export default function TaskInput() {
       />
       <button
         onClick={handleAdd}
-        className="px-4 py-2 bg-blue-400 text-white rounded-lg"
+         className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg"
       >
         Add
       </button>
