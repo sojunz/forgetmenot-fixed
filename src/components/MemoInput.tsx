@@ -5,9 +5,9 @@ export default function MemoInput() {
   const [text, setText] = useState("");
   const addMemo = useMemoStore((state) => state.addMemo);
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!text.trim()) return;
-    addMemo(text);
+    await addMemo(text);
     setText("");
   };
 
@@ -18,8 +18,8 @@ export default function MemoInput() {
         value={text}
         placeholder="Write a quick memo..."
         onChange={(e) => setText(e.target.value)}
-        className="flex-1 px-4 py-2 rounded-lg border border-gray-300 bg-white
-             focus:outline-none focus:ring-2 focus:ring-[#6BAF7C]"
+        onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+        className="flex-1 px-4 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#6BAF7C]"
       />
       <button
         onClick={handleAdd}

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -6,6 +7,7 @@ import { useFlowStore } from "../store/flowStore";
 export default function Flow() {
   const {
     categories,
+    fetchCategories,
     addCategory,
     deleteCategories,
     renameCategory,
@@ -17,6 +19,10 @@ export default function Flow() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   return (
     <motion.div
@@ -45,29 +51,27 @@ export default function Flow() {
       <div className="grid grid-cols-1 gap-4 max-w-md mx-auto mb-6">
         {categories.map((cat) => (
           <div
-            key={cat.name}
+            key={cat._id}
             className="bg-white p-5 rounded-xl shadow-sm flex justify-between items-center"
           >
             <div className="flex items-center gap-3">
-              {/* Edit 모드: 체크박스 */}
               {editMode && (
                 <input
                   type="checkbox"
-                  checked={selectedCategories.includes(cat.name)}
+                  checked={selectedCategories.includes(cat._id)}
                   onChange={() => {
-                    if (selectedCategories.includes(cat.name)) {
+                    if (selectedCategories.includes(cat._id)) {
                       setSelectedCategories(
-                        selectedCategories.filter((c) => c !== cat.name)
+                        selectedCategories.filter((c) => c !== cat._id)
                       );
                     } else {
-                      setSelectedCategories([...selectedCategories, cat.name]);
+                      setSelectedCategories([...selectedCategories, cat._id]);
                     }
                   }}
                 />
               )}
 
-              {/* Rename 모드 / Edit 모드 / 일반 모드 */}
-              {renameTarget === cat.name ? (
+              {renameTarget === cat._id ? (
                 <input
                   type="text"
                   value={renameValue}
@@ -88,12 +92,11 @@ export default function Flow() {
               )}
             </div>
 
-            {/* 오른쪽: Rename / Save 버튼 + 아이템 개수 */}
             <div className="flex items-center gap-3">
-              {editMode && renameTarget !== cat.name && (
+              {editMode && renameTarget !== cat._id && (
                 <button
                   onClick={() => {
-                    setRenameTarget(cat.name);
+                    setRenameTarget(cat._id);
                     setRenameValue(cat.name);
                   }}
                   className="text-gray-500 text-sm underline"
@@ -102,10 +105,10 @@ export default function Flow() {
                 </button>
               )}
 
-              {renameTarget === cat.name && (
+              {renameTarget === cat._id && (
                 <button
-                  onClick={() => {
-                    renameCategory(cat.name, renameValue);
+                  onClick={async () => {
+                    await renameCategory(cat._id, renameValue);
                     setRenameTarget(null);
                   }}
                   className="text-[#3F4A3F] text-sm underline"
@@ -114,7 +117,6 @@ export default function Flow() {
                 </button>
               )}
 
-              {/* count → memos.length */}
               <span className="text-sm text-gray-500">
                 {cat.memos.length} items
               </span>
@@ -127,8 +129,8 @@ export default function Flow() {
       {editMode && selectedCategories.length > 0 && (
         <div className="max-w-md mx-auto mb-4">
           <button
-            onClick={() => {
-              deleteCategories(selectedCategories);
+            onClick={async () => {
+              await deleteCategories(selectedCategories);
               setSelectedCategories([]);
               setEditMode(false);
             }}
@@ -150,9 +152,9 @@ export default function Flow() {
             className="flex-1 p-2 rounded-lg border border-gray-300"
           />
           <button
-            onClick={() => {
+            onClick={async () => {
               if (!newCategory.trim()) return;
-              addCategory(newCategory);
+              await addCategory(newCategory);
               setNewCategory("");
               setShowInput(false);
             }}

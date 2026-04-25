@@ -1,45 +1,68 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { useAuthStore } from "./authStore";
 
 interface LeaveItem {
-  id: number;
+  _id: string;
   text: string;
   checked: boolean;
 }
 
 interface LeaveStore {
   items: LeaveItem[];
-  addItem: (text: string) => void;
-  toggleItem: (id: number) => void;
-  removeItem: (id: number) => void;
+  fetchItems: () => Promise<void>;
+  addItem: (text: string) => Promise<void>;
+  toggleItem: (id: string) => Promise<void>;
+  removeItem: (id: string) => Promise<void>;
 }
 
-export const useLeaveStore = create<LeaveStore>()(
-  persist(
-    (set) => ({
-      items: [
-        { id: 1, text: "Keys", checked: false },
-        { id: 2, text: "Wallet", checked: false },
-        { id: 3, text: "Phone", checked: false },
-      ],
+const API = "http://localhost:8080";
 
-      addItem: (text) =>
-        set((state) => ({
-          items: [...state.items, { id: Date.now(), text, checked: false }],
-        })),
+export const useLeaveStore = create<LeaveStore>()((set) => ({
+  items: [],
 
-      toggleItem: (id) =>
-        set((state) => ({
-          items: state.items.map((item) =>
-            item.id === id ? { ...item, checked: !item.checked } : item
-          ),
-        })),
+  fetchItems: async () => {
+    const token = useAuthStore.getState().token;
+    const res = await fetch(`${API}/api/leave`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    set({ items: data });
+  },
 
-      removeItem: (id) =>
-        set((state) => ({
-          items: state.items.filter((item) => item.id !== id),
-        })),
-    }),
-    { name: "leave-storage" }
-  )
-);
+  addItem: async (text) => {
+    const token = useAuthStore.getState().token;
+    const res = await fetch(`${API}/api/leave`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ text }),
+    });
+    const data = await res.json();
+    set((state) => ({ items: [...state.items, data] }));
+  },
+
+  toggleItem: async (id) => {
+    const token = useAuthStore.getState().token;
+    const res = await fetch(`${API}/api/leave/${id}`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    set((state) => ({
+      items: state.items.map((item) => (item._id === id ? data : item)),
+    }));
+  },
+
+  removeItem: async (id) => {
+    const token = useAuthStore.getState().token;
+    await fetch(`${API}/api/leave/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    set((state) => ({
+      items: state.items.filter((item) => item._id !== id),
+    }));
+  },
+}));

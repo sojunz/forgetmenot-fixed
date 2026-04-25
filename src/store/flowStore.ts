@@ -1,74 +1,120 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { useAuthStore } from "./authStore";
 
 interface Category {
+  _id: string;
   name: string;
   memos: string[];
 }
 
 interface FlowStore {
   categories: Category[];
-
-  setCategories: (newCats: Category[]) => void;
-  addCategory: (name: string) => void;
-  deleteCategories: (names: string[]) => void;
-  renameCategory: (oldName: string, newName: string) => void;
-
-  addMemoToCategory: (categoryName: string, memoText: string) => void;
-  removeMemoFromCategory: (categoryName: string, memoText: string) => void;
+  fetchCategories: () => Promise<void>;
+  addCategory: (name: string) => Promise<void>;
+  deleteCategories: (ids: string[]) => Promise<void>;
+  renameCategory: (id: string, newName: string) => Promise<void>;
+  addMemoToCategory: (categoryName: string, memoText: string) => Promise<void>;
+  removeMemoFromCategory: (categoryName: string, memoText: string) => Promise<void>;
 }
 
-export const useFlowStore = create<FlowStore>()(
-  persist(
-    (set) => ({
-      categories: [
-        { name: "Household", memos: [] },
-        { name: "Ideas", memos: [] },
-        { name: "Shopping", memos: [] },
-        { name: "Emotions", memos: [] },
-      ],
+const API = "http://localhost:8080";
 
-      setCategories: (newCats) => set({ categories: newCats }),
+export const useFlowStore = create<FlowStore>()((set, get) => ({
+  categories: [],
 
-      addCategory: (name) =>
-        set((state) => ({
-          categories: [...state.categories, { name, memos: [] }],
-        })),
+  fetchCategories: async () => {
+    const token = useAuthStore.getState().token;
+    const res = await fetch(`${API}/api/categories`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    set({ categories: data });
+  },
 
-      deleteCategories: (names) =>
-        set((state) => ({
-          categories: state.categories.filter(
-            (cat) => !names.includes(cat.name)
-          ),
-        })),
+  addCategory: async (name) => {
+    const token = useAuthStore.getState().token;
+    const res = await fetch(`${API}/api/categories`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name }),
+    });
+    const data = await res.json();
+    set((state) => ({ categories: [...state.categories, data] }));
+  },
 
-      renameCategory: (oldName, newName) =>
-        set((state) => ({
-          categories: state.categories.map((cat) =>
-            cat.name === oldName ? { ...cat, name: newName } : cat
-          ),
-        })),
+  deleteCategories: async (ids) => {
+    const token = useAuthStore.getState().token;
+    await Promise.all(
+      ids.map((id) =>
+        fetch(`${API}/api/categories/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      )
+    );
+    set((state) => ({
+      categories: state.categories.filter((cat) => !ids.includes(cat._id)),
+    }));
+  },
 
-      addMemoToCategory: (categoryName, memoText) =>
-        set((state) => ({
-          categories: state.categories.map((c) =>
-            c.name === categoryName
-              ? { ...c, memos: [...c.memos, memoText] }
-              : c
-          ),
-        })),
+  renameCategory: async (id, newName) => {
+    const token = useAuthStore.getState().token;
+    const res = await fetch(`${API}/api/categories/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name: newName }),
+    });
+    const data = await res.json();
+    set((state) => ({
+      categories: state.categories.map((cat) =>
+        cat._id === id ? data : cat
+      ),
+    }));
+  },
 
-      removeMemoFromCategory: (categoryName, memoText) =>
-        set((state) => ({
-          categories: state.categories.map((c) =>
-            c.name === categoryName
-              ? { ...c, memos: c.memos.filter((m) => m !== memoText) }
-              : c
-          ),
-        })),
-    }),
-    {
-      name: "flow-storage",
-    }
-  )
-);
+  addMemoToCategory: async (categoryName, memoText) => {
+    const token = useAuthStore.getState().token;
+    const category = get().categories.find((c) => c.name === categoryName);
+    if (!category) return;
+    const res = await fetch(`${API}/api/categories/${category._id}/memos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ text: memoText }),
+    });
+    const data = await res.json();
+    set((state) => ({
+      categories: state.categories.map((cat) =>
+        cat._id === category._id ? data : cat
+      ),
+    }));
+  },
+
+  removeMemoFromCategory: async (categoryName, memoText) => {
+    const token = useAuthStore.getState().token;
+    const category = get().categories.find((c) => c.name === categoryName);
+    if (!category) return;
+    const res = await fetch(`${API}/api/categories/${category._id}/memos`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ text: memoText }),
+    });
+    const data = await res.json();
+    set((state) => ({
+      categories: state.categories.map((cat) =>
+        cat._id === category._id ? data : cat
+      ),
+    }));
+  },
+}));

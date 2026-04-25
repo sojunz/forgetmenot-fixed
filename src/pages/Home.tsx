@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import MemoInput from "../components/MemoInput";
 import MemoList from "../components/MemoList";
@@ -13,20 +14,24 @@ const quotes = [
 ];
 
 export default function Home() {
-  const { memos } = useMemoStore();
-  const { tasks } = useTaskStore();
+  const { memos, fetchMemos } = useMemoStore();
+  const { tasks, fetchTasks } = useTaskStore();
 
   const pendingTasks = tasks.filter((t) => !t.done).length;
 
-  // 오늘 날짜
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
   });
 
-  // 랜덤 한마디
   const quote = quotes[new Date().getDay() % quotes.length];
+
+  // 페이지 열릴 때 데이터 가져오기
+  useEffect(() => {
+    fetchMemos();
+    fetchTasks();
+  }, []);
 
   return (
     <motion.div
@@ -66,7 +71,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 하단 여백 */}
       <div className="h-12" />
     </motion.div>
   );

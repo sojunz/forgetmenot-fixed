@@ -17,14 +17,14 @@ export default function TaskList() {
     <ul className="space-y-2">
       {tasks.map((task) => (
         <li
-          key={task.id}
+          key={task._id}
           className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100"
         >
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               checked={task.done}
-              onChange={() => toggleTask(task.id)}
+              onChange={() => toggleTask(task._id)}
               className="w-4 h-4 accent-[#6BAF7C]"
             />
             <span
@@ -36,7 +36,7 @@ export default function TaskList() {
             </span>
           </div>
           <button
-            onClick={() => removeTask(task.id)}
+            onClick={() => removeTask(task._id)}
             className="text-gray-300 hover:text-red-400 transition-colors"
           >
             ✕

@@ -1,43 +1,66 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { useAuthStore } from "./authStore";
 
 interface Task {
-  id: number;
+  _id: string;
   text: string;
   done: boolean;
 }
 
 interface TaskStore {
   tasks: Task[];
-  addTask: (text: string) => void;
-  toggleTask: (id: number) => void;
-  removeTask: (id: number) => void;
+  fetchTasks: () => Promise<void>;
+  addTask: (text: string) => Promise<void>;
+  toggleTask: (id: string) => Promise<void>;
+  removeTask: (id: string) => Promise<void>;
 }
 
-export const useTaskStore = create<TaskStore>()(
-  persist(
-    (set) => ({
-      tasks: [],
+const API = "http://localhost:8080";
 
-      addTask: (text) =>
-        set((state) => ({
-          tasks: [...state.tasks, { id: Date.now(), text, done: false }],
-        })),
+export const useTaskStore = create<TaskStore>()((set) => ({
+  tasks: [],
 
-      toggleTask: (id) =>
-        set((state) => ({
-          tasks: state.tasks.map((t) =>
-            t.id === id ? { ...t, done: !t.done } : t
-          ),
-        })),
+  fetchTasks: async () => {
+    const token = useAuthStore.getState().token;
+    const res = await fetch(`${API}/api/tasks`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    set({ tasks: data });
+  },
 
-      removeTask: (id) =>
-        set((state) => ({
-          tasks: state.tasks.filter((t) => t.id !== id),
-        })),
-    }),
-    {
-      name: "tasks-storage",
-    }
-  )
-);
+  addTask: async (text) => {
+    const token = useAuthStore.getState().token;
+    const res = await fetch(`${API}/api/tasks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ text }),
+    });
+    const data = await res.json();
+    set((state) => ({ tasks: [...state.tasks, data] }));
+  },
+
+  toggleTask: async (id) => {
+    const token = useAuthStore.getState().token;
+    const res = await fetch(`${API}/api/tasks/${id}`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    set((state) => ({
+      tasks: state.tasks.map((t) => (t._id === id ? data : t)),
+    }));
+  },
+
+  removeTask: async (id) => {
+    const token = useAuthStore.getState().token;
+    await fetch(`${API}/api/tasks/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    set((state) => ({ tasks: state.tasks.filter((t) => t._id !== id) }));
+  },
+}));

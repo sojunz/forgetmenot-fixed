@@ -5,9 +5,9 @@ export default function TaskInput() {
   const [text, setText] = useState("");
   const addTask = useTaskStore((state) => state.addTask);
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!text.trim()) return;
-    addTask(text);
+    await addTask(text);
     setText("");
   };
 
@@ -18,12 +18,12 @@ export default function TaskInput() {
         value={text}
         placeholder="Add a task..."
         onChange={(e) => setText(e.target.value)}
-        className="flex-1 px-4 py-2 rounded-lg border border-gray-300 bg-white
-                   focus:outline-none focus:ring-2 focus:ring-blue-300"
+        onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+        className="flex-1 px-4 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#6BAF7C]"
       />
       <button
         onClick={handleAdd}
-         className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg"
+        className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg"
       >
         Add
       </button>
