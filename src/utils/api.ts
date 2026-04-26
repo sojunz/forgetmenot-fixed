@@ -1,6 +1,6 @@
 import { useAuthStore } from "../store/authStore";
 
-export const API = "http://localhost:8080";
+export const API = "https://forgetmenot-server.onrender.com";
 
 export const apiFetch = async (url: string, options: RequestInit = {}) => {
   const token = useAuthStore.getState().token;
