@@ -53,18 +53,18 @@ export default function Settings() {
       <div className="w-full max-w-md mt-8">
         <h1 className="text-3xl font-semibold text-[#3F4A3F] mb-6">Settings</h1>
 
-        {/* 프로필 */}
-        <div className="bg-white shadow-sm rounded-xl p-6 mb-4 flex items-center gap-4">
-          <img
-            src="/profile.png"
-            alt="Profile"
-            className="w-14 h-14 rounded-full object-cover border-2 border-[#6BAF7C]"
-          />
-          <div>
-            <p className="font-semibold text-[#3F4A3F]">{user?.username}</p>
-            <p className="text-sm text-gray-400">{user?.email}</p>
-          </div>
-        </div>
+       {/* 프로필 */}
+<div className="bg-white shadow-sm rounded-xl p-6 mb-4 flex items-center gap-4">
+  <div className="w-14 h-14 rounded-full bg-[#6BAF7C] flex items-center justify-center border-2 border-[#6BAF7C]">
+    <span className="text-white text-2xl font-bold">
+      {user?.username?.charAt(0).toUpperCase()}
+    </span>
+  </div>
+  <div>
+    <p className="font-semibold text-[#3F4A3F]">{user?.username}</p>
+    <p className="text-sm text-gray-400">{user?.email}</p>
+  </div>
+</div>
 
         {/* 데이터 요약 */}
         <div className="bg-white shadow-sm rounded-xl p-6 mb-4">
