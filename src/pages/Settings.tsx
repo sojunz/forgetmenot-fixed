@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMemoStore } from "../store/memoStore";
 import { useTaskStore } from "../store/taskStore";
 import { useLeaveStore } from "../store/leaveStore";
 import { useAuthStore } from "../store/authStore";
+import { useNotificationStore } from "../store/notificationStore";
 
 export default function Settings() {
   const { memos } = useMemoStore();
@@ -12,9 +13,24 @@ export default function Settings() {
   const { items } = useLeaveStore();
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const {
+    morningTime,
+    leaveTime,
+    permission,
+    setMorningTime,
+    setLeaveTime,
+    requestPermission,
+    scheduleNotifications,
+  } = useNotificationStore();
 
   const [coachVisible, setCoachVisible] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
+
+  useEffect(() => {
+    if (permission === "granted") {
+      scheduleNotifications();
+    }
+  }, [morningTime, leaveTime, permission]);
 
   const clearAll = () => {
     localStorage.clear();
@@ -87,6 +103,51 @@ export default function Settings() {
               }`}
             />
           </button>
+        </div>
+
+        {/* 알림 설정 */}
+        <div className="bg-white shadow-sm rounded-xl p-6 mb-4">
+          <p className="text-[#3F4A3F] font-medium mb-3">Notifications 🔔</p>
+
+          {/* 권한 요청 */}
+          {permission !== "granted" ? (
+            <button
+              onClick={requestPermission}
+              className="w-full py-2 rounded-xl bg-[#E6F7EC] text-[#3F4A3F] text-sm font-medium hover:bg-[#d7f0e0] transition mb-4"
+            >
+              Enable Notifications
+            </button>
+          ) : (
+            <p className="text-sm text-[#6BAF7C] mb-4">✅ Notifications enabled</p>
+          )}
+
+          {/* 아침 알림 시간 */}
+          <div className="flex justify-between items-center mb-3">
+            <div>
+              <p className="text-sm text-[#3F4A3F] font-medium">Morning reminder 🌱</p>
+              <p className="text-xs text-gray-400">Daily check-in time</p>
+            </div>
+            <input
+              type="time"
+              value={morningTime}
+              onChange={(e) => setMorningTime(e.target.value)}
+              className="border border-gray-200 rounded-lg px-2 py-1 text-sm text-[#3F4A3F] focus:outline-none focus:ring-2 focus:ring-[#6BAF7C]"
+            />
+          </div>
+
+          {/* Leave 알림 시간 */}
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm text-[#3F4A3F] font-medium">Before I Leave 🚪</p>
+              <p className="text-xs text-gray-400">Departure reminder time</p>
+            </div>
+            <input
+              type="time"
+              value={leaveTime}
+              onChange={(e) => setLeaveTime(e.target.value)}
+              className="border border-gray-200 rounded-lg px-2 py-1 text-sm text-[#3F4A3F] focus:outline-none focus:ring-2 focus:ring-[#6BAF7C]"
+            />
+          </div>
         </div>
 
         {/* 앱 정보 */}

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { useAuthStore } from "./authStore";
+import { apiFetch } from "../utils/api";
 
 interface LeaveItem {
   _id: string;
@@ -15,40 +15,29 @@ interface LeaveStore {
   removeItem: (id: string) => Promise<void>;
 }
 
-const API = "http://localhost:8080";
-
 export const useLeaveStore = create<LeaveStore>()((set) => ({
   items: [],
 
   fetchItems: async () => {
-    const token = useAuthStore.getState().token;
-    const res = await fetch(`${API}/api/leave`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await apiFetch("/api/leave");
+    if (!res) return;
     const data = await res.json();
     set({ items: data });
   },
 
   addItem: async (text) => {
-    const token = useAuthStore.getState().token;
-    const res = await fetch(`${API}/api/leave`, {
+    const res = await apiFetch("/api/leave", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
       body: JSON.stringify({ text }),
     });
+    if (!res) return;
     const data = await res.json();
     set((state) => ({ items: [...state.items, data] }));
   },
 
   toggleItem: async (id) => {
-    const token = useAuthStore.getState().token;
-    const res = await fetch(`${API}/api/leave/${id}`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await apiFetch(`/api/leave/${id}`, { method: "PATCH" });
+    if (!res) return;
     const data = await res.json();
     set((state) => ({
       items: state.items.map((item) => (item._id === id ? data : item)),
@@ -56,11 +45,7 @@ export const useLeaveStore = create<LeaveStore>()((set) => ({
   },
 
   removeItem: async (id) => {
-    const token = useAuthStore.getState().token;
-    await fetch(`${API}/api/leave/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await apiFetch(`/api/leave/${id}`, { method: "DELETE" });
     set((state) => ({
       items: state.items.filter((item) => item._id !== id),
     }));

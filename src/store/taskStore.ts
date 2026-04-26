@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { useAuthStore } from "./authStore";
+import { apiFetch } from "../utils/api";
 
 interface Task {
   _id: string;
@@ -15,40 +15,29 @@ interface TaskStore {
   removeTask: (id: string) => Promise<void>;
 }
 
-const API = "http://localhost:8080";
-
 export const useTaskStore = create<TaskStore>()((set) => ({
   tasks: [],
 
   fetchTasks: async () => {
-    const token = useAuthStore.getState().token;
-    const res = await fetch(`${API}/api/tasks`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await apiFetch("/api/tasks");
+    if (!res) return;
     const data = await res.json();
     set({ tasks: data });
   },
 
   addTask: async (text) => {
-    const token = useAuthStore.getState().token;
-    const res = await fetch(`${API}/api/tasks`, {
+    const res = await apiFetch("/api/tasks", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
       body: JSON.stringify({ text }),
     });
+    if (!res) return;
     const data = await res.json();
     set((state) => ({ tasks: [...state.tasks, data] }));
   },
 
   toggleTask: async (id) => {
-    const token = useAuthStore.getState().token;
-    const res = await fetch(`${API}/api/tasks/${id}`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await apiFetch(`/api/tasks/${id}`, { method: "PATCH" });
+    if (!res) return;
     const data = await res.json();
     set((state) => ({
       tasks: state.tasks.map((t) => (t._id === id ? data : t)),
@@ -56,11 +45,7 @@ export const useTaskStore = create<TaskStore>()((set) => ({
   },
 
   removeTask: async (id) => {
-    const token = useAuthStore.getState().token;
-    await fetch(`${API}/api/tasks/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await apiFetch(`/api/tasks/${id}`, { method: "DELETE" });
     set((state) => ({ tasks: state.tasks.filter((t) => t._id !== id) }));
   },
 }));

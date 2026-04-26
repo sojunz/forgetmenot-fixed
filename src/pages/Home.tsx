@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import MemoInput from "../components/MemoInput";
 import MemoList from "../components/MemoList";
@@ -14,8 +13,8 @@ const quotes = [
 ];
 
 export default function Home() {
-  const { memos, fetchMemos } = useMemoStore();
-  const { tasks, fetchTasks } = useTaskStore();
+  const { memos } = useMemoStore();
+  const { tasks } = useTaskStore();
 
   const pendingTasks = tasks.filter((t) => !t.done).length;
 
@@ -26,12 +25,6 @@ export default function Home() {
   });
 
   const quote = quotes[new Date().getDay() % quotes.length];
-
-  // 페이지 열릴 때 데이터 가져오기
-  useEffect(() => {
-    fetchMemos();
-    fetchTasks();
-  }, []);
 
   return (
     <motion.div

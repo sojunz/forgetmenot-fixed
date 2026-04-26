@@ -2,10 +2,12 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMemoStore } from "../store/memoStore";
 import { useFlowStore } from "../store/flowStore";
+import { useTaskStore } from "../store/taskStore";
 
 export default function MemoList() {
   const { memos, removeMemo } = useMemoStore();
   const { categories, addMemoToCategory } = useFlowStore();
+  const { addTask } = useTaskStore();
 
   const [moveTarget, setMoveTarget] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -27,12 +29,26 @@ export default function MemoList() {
         >
           <span className="text-[#3F4A3F]">{memo.text}</span>
           <div className="flex gap-3 items-center">
+            {/* → Task 버튼 */}
+            <button
+              onClick={async () => {
+                await addTask(memo.text);
+                await removeMemo(memo._id);
+              }}
+              className="px-3 py-1 rounded-full bg-[#fff3e0] text-[#e0933a] text-xs font-medium hover:bg-[#ffe0b2] transition"
+            >
+              → Task
+            </button>
+
+            {/* Move 버튼 */}
             <button
               onClick={() => setMoveTarget(memo._id)}
               className="px-3 py-1 rounded-full bg-[#E6F7EC] text-[#3F4A3F] text-xs font-medium hover:bg-[#d7f0e0] transition"
             >
               Move
             </button>
+
+            {/* 삭제 버튼 */}
             <button
               onClick={() => removeMemo(memo._id)}
               className="text-red-400 text-sm hover:text-red-500 transition"

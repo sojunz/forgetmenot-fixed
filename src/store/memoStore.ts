@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { useAuthStore } from "./authStore";
+import { apiFetch } from "../utils/api";
 
 interface Memo {
   _id: string;
@@ -13,40 +13,28 @@ interface MemoStore {
   removeMemo: (id: string) => Promise<void>;
 }
 
-const API = "http://localhost:8080";
-
 export const useMemoStore = create<MemoStore>()((set) => ({
   memos: [],
 
   fetchMemos: async () => {
-    const token = useAuthStore.getState().token;
-    const res = await fetch(`${API}/api/memos`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await apiFetch("/api/memos");
+    if (!res) return;
     const data = await res.json();
     set({ memos: data });
   },
 
   addMemo: async (text) => {
-    const token = useAuthStore.getState().token;
-    const res = await fetch(`${API}/api/memos`, {
+    const res = await apiFetch("/api/memos", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
       body: JSON.stringify({ text }),
     });
+    if (!res) return;
     const data = await res.json();
     set((state) => ({ memos: [...state.memos, data] }));
   },
 
   removeMemo: async (id) => {
-    const token = useAuthStore.getState().token;
-    await fetch(`${API}/api/memos/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await apiFetch(`/api/memos/${id}`, { method: "DELETE" });
     set((state) => ({ memos: state.memos.filter((m) => m._id !== id) }));
   },
 }));

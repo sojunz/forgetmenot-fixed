@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -7,7 +6,6 @@ import { useFlowStore } from "../store/flowStore";
 export default function Flow() {
   const {
     categories,
-    fetchCategories,
     addCategory,
     deleteCategories,
     renameCategory,
@@ -19,10 +17,6 @@ export default function Flow() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   return (
     <motion.div
@@ -170,7 +164,7 @@ export default function Flow() {
         <div className="max-w-md mx-auto">
           <button
             onClick={() => setShowInput(true)}
-            className="w-full bg-[#3F4A3F] text-white px-4 py-2 rounded-lg shadow-sm"
+            className="w-full bg-[#6BAF7C] text-white px-4 py-2 rounded-lg shadow-sm"
           >
             + Add Category
           </button>

@@ -1,18 +1,13 @@
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLeaveStore } from "../store/leaveStore";
 
 export default function Leave() {
-  const { items, fetchItems, addItem, toggleItem, removeItem } = useLeaveStore();
+  const { items, addItem, toggleItem, removeItem } = useLeaveStore();
   const [text, setText] = useState("");
 
   const checkedCount = items.filter((i) => i.checked).length;
   const total = items.length;
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
 
   return (
     <motion.div

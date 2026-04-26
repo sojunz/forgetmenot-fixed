@@ -1,16 +1,8 @@
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import TaskInput from "../components/TaskInput";
 import TaskList from "../components/TaskList";
-import { useTaskStore } from "../store/taskStore";
 
 export default function Tasks() {
-  const { fetchTasks } = useTaskStore();
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
   return (
     <motion.div
       className="min-h-screen pt-16 flex flex-col items-center bg-[#F3F8F4] px-6"

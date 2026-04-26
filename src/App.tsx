@@ -1,6 +1,11 @@
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 import { useAuthStore } from "./store/authStore";
+import { useMemoStore } from "./store/memoStore";
+import { useTaskStore } from "./store/taskStore";
+import { useFlowStore } from "./store/flowStore";
+import { useLeaveStore } from "./store/leaveStore";
 import Navigation from "./components/Navigation";
 import Home from "./pages/Home";
 import Tasks from "./pages/Tasks";
@@ -44,6 +49,20 @@ function AnimatedRoutes() {
 
 export default function App() {
   const { token } = useAuthStore();
+  const { fetchMemos } = useMemoStore();
+  const { fetchTasks } = useTaskStore();
+  const { fetchCategories } = useFlowStore();
+  const { fetchItems } = useLeaveStore();
+
+  // 로그인 후 한번만 fetch
+  useEffect(() => {
+    if (token) {
+      fetchMemos();
+      fetchTasks();
+      fetchCategories();
+      fetchItems();
+    }
+  }, [token]);
 
   return (
     <BrowserRouter>
