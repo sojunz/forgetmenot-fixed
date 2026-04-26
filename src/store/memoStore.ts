@@ -4,6 +4,7 @@ import { apiFetch } from "../utils/api";
 interface Memo {
   _id: string;
   text: string;
+  createdAt: string;
 }
 
 interface MemoStore {

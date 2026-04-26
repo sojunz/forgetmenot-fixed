@@ -4,6 +4,16 @@ import { useMemoStore } from "../store/memoStore";
 import { useFlowStore } from "../store/flowStore";
 import { useTaskStore } from "../store/taskStore";
 
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toLocaleString("en-NZ", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 export default function MemoList() {
   const { memos, removeMemo } = useMemoStore();
   const { categories, addMemoToCategory } = useFlowStore();
@@ -27,7 +37,12 @@ export default function MemoList() {
           key={memo._id}
           className="bg-[#F3F8F4] p-4 rounded-xl shadow-sm flex justify-between items-center"
         >
-          <span className="text-[#3F4A3F]">{memo.text}</span>
+          <div className="flex flex-col gap-1">
+            <span className="text-[#3F4A3F]">{memo.text}</span>
+            <span className="text-xs text-gray-400">
+              {formatDate(memo.createdAt)}
+            </span>
+          </div>
           <div className="flex gap-3 items-center">
             {/* → Task 버튼 */}
             <button
