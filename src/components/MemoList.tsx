@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMemoStore } from "../store/memoStore";
 import { useFlowStore } from "../store/flowStore";
@@ -44,7 +45,6 @@ export default function MemoList() {
             </span>
           </div>
           <div className="flex gap-3 items-center">
-            {/* → Task 버튼 */}
             <button
               onClick={async () => {
                 await addTask(memo.text);
@@ -54,16 +54,12 @@ export default function MemoList() {
             >
               → Task
             </button>
-
-            {/* Move 버튼 */}
             <button
               onClick={() => setMoveTarget(memo._id)}
               className="px-3 py-1 rounded-full bg-[#E6F7EC] text-[#3F4A3F] text-xs font-medium hover:bg-[#d7f0e0] transition"
             >
               Move
             </button>
-
-            {/* 삭제 버튼 */}
             <button
               onClick={() => removeMemo(memo._id)}
               className="text-red-400 text-sm hover:text-red-500 transition"
@@ -93,21 +89,40 @@ export default function MemoList() {
               <div className="w-full flex justify-center mb-4 text-2xl">🌿</div>
               <p className="text-[#3F4A3F] mb-3 font-medium">Move memo to:</p>
 
-              <div className="flex flex-col gap-2 mb-4">
-                {categories.map((cat) => (
-                  <button
-                    key={cat.name}
-                    onClick={() => setSelectedCategory(cat.name)}
-                    className={`w-full py-2 px-4 rounded-xl text-sm font-medium transition ${
-                      selectedCategory === cat.name
-                        ? "bg-[#6BAF7C] text-white"
-                        : "bg-[#F3F8F4] text-[#3F4A3F] hover:bg-[#d7f0e0]"
-                    }`}
+              {/* 카테고리 없을 때 안내 */}
+              {categories.length === 0 ? (
+                <div className="text-center py-4">
+                  <p className="text-gray-400 text-sm mb-2">
+                    No categories yet! 🌿
+                  </p>
+                  <p className="text-gray-400 text-xs mb-4">
+                    Go to Flow to create one first.
+                  </p>
+                  <Link
+                    to="/flow"
+                    onClick={() => setMoveTarget(null)}
+                    className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg text-sm"
                   >
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
+                    Go to Flow →
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 mb-4">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.name}
+                      onClick={() => setSelectedCategory(cat.name)}
+                      className={`w-full py-2 px-4 rounded-xl text-sm font-medium transition ${
+                        selectedCategory === cat.name
+                          ? "bg-[#6BAF7C] text-white"
+                          : "bg-[#F3F8F4] text-[#3F4A3F] hover:bg-[#d7f0e0]"
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               <button
                 onClick={async () => {
