@@ -92,6 +92,12 @@ export default function Login() {
           </button>
         </div>
 
+          <div className="text-right">
+          <Link to="/forgot-password" className="text-sm text-gray-400 hover:text-[#6BAF7C]">
+          Forgot password?
+          </Link>
+            </div>
+
         {/* Register 링크 */}
         <p className="text-center text-sm text-gray-400 mt-4">
           Don't have an account?{" "}

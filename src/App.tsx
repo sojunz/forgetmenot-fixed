@@ -15,6 +15,9 @@ import Settings from "./pages/Settings";
 import Leave from "./pages/Leave";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -27,6 +30,8 @@ function AnimatedRoutes() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </AnimatePresence>
     );
