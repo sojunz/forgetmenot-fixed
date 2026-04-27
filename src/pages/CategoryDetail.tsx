@@ -8,6 +8,7 @@ export default function CategoryDetail() {
   const navigate = useNavigate();
   const { categories, addMemoToCategory, removeMemoFromCategory } = useFlowStore();
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
 
   if (!name) return null;
 
@@ -26,7 +27,6 @@ export default function CategoryDetail() {
       transition={{ duration: 0.25 }}
     >
       <div className="w-full max-w-md mt-8">
-        {/* 뒤로가기 */}
         <button
           onClick={() => navigate("/flow")}
           className="text-sm text-gray-400 hover:text-[#3F4A3F] mb-4 transition-colors"
@@ -34,7 +34,6 @@ export default function CategoryDetail() {
           ← Back to Flow
         </button>
 
-        {/* Header */}
         <h1 className="text-3xl font-semibold text-[#3F4A3F] mb-1">
           {category.name}
         </h1>
@@ -42,7 +41,6 @@ export default function CategoryDetail() {
           {category.memos.length} items
         </p>
 
-        {/* 메모 리스트 */}
         <div className="bg-white shadow-sm rounded-xl p-6 mb-4">
           {category.memos.length === 0 ? (
             <p className="text-center text-gray-400 text-sm">
@@ -57,7 +55,9 @@ export default function CategoryDetail() {
                 >
                   <span className="text-sm text-[#3F4A3F]">{m}</span>
                   <button
-                    onClick={() => removeMemoFromCategory(category.name, m)}
+                    onClick={async () => {
+                      await removeMemoFromCategory(category.name, m);
+                    }}
                     className="text-gray-300 hover:text-red-400 transition-colors"
                   >
                     ✕
@@ -74,18 +74,23 @@ export default function CategoryDetail() {
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && !loading && document.getElementById("addMemoBtn")?.click()}
             placeholder="Add a memo..."
             className="flex-1 px-4 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#6BAF7C]"
           />
           <button
-            onClick={() => {
+            id="addMemoBtn"
+            disabled={loading}
+            onClick={async () => {
               if (!text.trim()) return;
-              addMemoToCategory(category.name, text);
+              setLoading(true);
+              await addMemoToCategory(category.name, text);
               setText("");
+              setLoading(false);
             }}
-            className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg"
+            className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg disabled:opacity-50"
           >
-            Add
+            {loading ? "Adding..." : "Add"}
           </button>
         </div>
       </div>

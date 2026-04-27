@@ -17,6 +17,7 @@ export default function Flow() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [renameTarget, setRenameTarget] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   return (
     <motion.div
@@ -102,12 +103,15 @@ export default function Flow() {
               {renameTarget === cat._id && (
                 <button
                   onClick={async () => {
+                    setLoading(true);
                     await renameCategory(cat._id, renameValue);
                     setRenameTarget(null);
+                    setLoading(false);
                   }}
-                  className="text-[#3F4A3F] text-sm underline"
+                  disabled={loading}
+                  className="text-[#3F4A3F] text-sm underline disabled:opacity-50"
                 >
-                  Save
+                  {loading ? "Saving..." : "Save"}
                 </button>
               )}
 
@@ -124,13 +128,16 @@ export default function Flow() {
         <div className="max-w-md mx-auto mb-4">
           <button
             onClick={async () => {
+              setLoading(true);
               await deleteCategories(selectedCategories);
               setSelectedCategories([]);
               setEditMode(false);
+              setLoading(false);
             }}
-            className="w-full bg-red-500 text-white py-2 rounded-lg"
+            disabled={loading}
+            className="w-full bg-red-500 text-white py-2 rounded-lg disabled:opacity-50"
           >
-            Delete Selected
+            {loading ? "Deleting..." : "Delete Selected"}
           </button>
         </div>
       )}
@@ -142,19 +149,24 @@ export default function Flow() {
             type="text"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && !loading && document.getElementById("addBtn")?.click()}
             placeholder="New category name"
             className="flex-1 p-2 rounded-lg border border-gray-300"
           />
           <button
+            id="addBtn"
+            disabled={loading}
             onClick={async () => {
               if (!newCategory.trim()) return;
+              setLoading(true);
               await addCategory(newCategory);
               setNewCategory("");
               setShowInput(false);
+              setLoading(false);
             }}
-            className="bg-[#3F4A3F] text-white px-4 py-2 rounded-lg"
+            className="bg-[#6BAF7C] text-white px-4 py-2 rounded-lg disabled:opacity-50"
           >
-            Add
+            {loading ? "Adding..." : "Add"}
           </button>
         </div>
       )}

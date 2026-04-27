@@ -5,6 +5,7 @@ import { useLeaveStore } from "../store/leaveStore";
 export default function Leave() {
   const { items, addItem, toggleItem, removeItem } = useLeaveStore();
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const checkedCount = items.filter((i) => i.checked).length;
   const total = items.length;
@@ -36,7 +37,9 @@ export default function Leave() {
                   <input
                     type="checkbox"
                     checked={item.checked}
-                    onChange={() => toggleItem(item._id)}
+                    onChange={async () => {
+                      await toggleItem(item._id);
+                    }}
                     className="w-4 h-4 accent-[#6BAF7C]"
                   />
                   <span
@@ -50,7 +53,9 @@ export default function Leave() {
                   </span>
                 </div>
                 <button
-                  onClick={() => removeItem(item._id)}
+                  onClick={async () => {
+                    await removeItem(item._id);
+                  }}
                   className="text-gray-300 hover:text-red-400 transition-colors"
                 >
                   ✕
@@ -65,19 +70,29 @@ export default function Leave() {
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && addItem(text)}
+            onKeyDown={async (e) => {
+              if (e.key === "Enter" && text.trim() && !loading) {
+                setLoading(true);
+                await addItem(text);
+                setText("");
+                setLoading(false);
+              }
+            }}
             placeholder="Add an item..."
             className="flex-1 px-4 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#6BAF7C]"
           />
           <button
+            disabled={loading}
             onClick={async () => {
               if (!text.trim()) return;
+              setLoading(true);
               await addItem(text);
               setText("");
+              setLoading(false);
             }}
-            className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg"
+            className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg disabled:opacity-50"
           >
-            Add
+            {loading ? "Adding..." : "Add"}
           </button>
         </div>
       </div>

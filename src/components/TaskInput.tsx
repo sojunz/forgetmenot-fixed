@@ -3,12 +3,15 @@ import { useState } from "react";
 
 export default function TaskInput() {
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
   const addTask = useTaskStore((state) => state.addTask);
 
   const handleAdd = async () => {
-    if (!text.trim()) return;
+    if (!text.trim() || loading) return;
+    setLoading(true);
     await addTask(text);
     setText("");
+    setLoading(false);
   };
 
   return (
@@ -23,9 +26,10 @@ export default function TaskInput() {
       />
       <button
         onClick={handleAdd}
-        className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg"
+        disabled={loading}
+        className="px-4 py-2 bg-[#6BAF7C] text-white rounded-lg disabled:opacity-50"
       >
-        Add
+        {loading ? "Adding..." : "Add"}
       </button>
     </div>
   );
