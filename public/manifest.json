@@ -1,0 +1,16 @@
+{
+    "name": "ForgetMeNot",
+    "short_name": "ForgetMeNot",
+    "description": "A gentle productivity companion",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#F3F8F4",
+    "theme_color": "#6BAF7C",
+    "icons": [
+      {
+        "src": "/favicon.svg",
+        "sizes": "any",
+        "type": "image/svg+xml"
+      }
+    ]
+  }
