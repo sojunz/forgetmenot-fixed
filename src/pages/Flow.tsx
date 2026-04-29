@@ -27,20 +27,25 @@ export default function Flow() {
       exit={{ opacity: 0, x: -40 }}
       transition={{ duration: 0.25 }}
     >
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6 max-w-md mx-auto">
-        <h1 className="text-3xl font-semibold text-[#3F4A3F]">Flow</h1>
-        <button
-          onClick={() => {
-            setEditMode(!editMode);
-            setSelectedCategories([]);
-            setRenameTarget(null);
-          }}
-          className="text-[#3F4A3F] underline"
-        >
-          {editMode ? "Done" : "Edit"}
-        </button>
-      </div>
+    {/* Header */}
+<div className="max-w-md mx-auto mb-2">
+  <div className="flex justify-between items-center">
+    <h1 className="text-3xl font-semibold text-[#3F4A3F]">Flow</h1>
+    <button
+      onClick={() => {
+        setEditMode(!editMode);
+        setSelectedCategories([]);
+        setRenameTarget(null);
+      }}
+      className="text-[#3F4A3F] underline"
+    >
+      {editMode ? "Done" : "Edit"}
+    </button>
+  </div>
+  <p className="text-sm text-gray-400 italic mt-1 mb-6">
+    "A place for everything, everything in its place." 🌿
+  </p>
+</div>
 
       {/* 카테고리 리스트 */}
       <div className="grid grid-cols-1 gap-4 max-w-md mx-auto mb-6">

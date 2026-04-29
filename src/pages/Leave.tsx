@@ -19,12 +19,15 @@ export default function Leave() {
       transition={{ duration: 0.25 }}
     >
       <div className="w-full max-w-md mt-8">
-        <h1 className="text-3xl font-semibold text-[#3F4A3F] mb-1">
-          Before I Leave 🚪
-        </h1>
-        <p className="text-sm text-gray-400 mb-6">
-          {checkedCount} / {total} checked
-        </p>
+      <h1 className="text-3xl font-semibold text-[#3F4A3F] mb-1">
+  Before I Leave 🚪
+</h1>
+<p className="text-sm text-gray-400 italic mb-1">
+  "Preparation is the key to success." ✨
+</p>
+<p className="text-sm text-gray-400 mb-6">
+  {checkedCount} / {total} checked
+</p>
 
         <div className="bg-white shadow-sm rounded-xl p-6 mb-4">
           <ul className="space-y-3">

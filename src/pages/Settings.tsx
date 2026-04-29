@@ -51,7 +51,10 @@ export default function Settings() {
       transition={{ duration: 0.25 }}
     >
       <div className="w-full max-w-md mt-8">
-        <h1 className="text-3xl font-semibold text-[#3F4A3F] mb-6">Settings</h1>
+      <h1 className="text-3xl font-semibold text-[#3F4A3F] mb-1">Settings</h1>
+<p className="text-sm text-gray-400 italic mb-6">
+  "Know yourself, and you shall know peace." ⚙️
+</p>
 
        {/* 프로필 */}
 <div className="bg-white shadow-sm rounded-xl p-6 mb-4 flex items-center gap-4">

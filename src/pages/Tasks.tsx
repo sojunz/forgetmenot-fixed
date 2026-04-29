@@ -12,7 +12,10 @@ export default function Tasks() {
       transition={{ duration: 0.25 }}
     >
       <div className="w-full max-w-md mt-8">
-        <h1 className="text-3xl font-semibold text-[#3F4A3F] mb-6">Tasks</h1>
+        <h1 className="text-3xl font-semibold text-[#3F4A3F] mb-1">Tasks</h1>
+        <p className="text-sm text-gray-400 italic mb-6">
+          "The secret of getting ahead is getting started." 🌱
+        </p>
         <div className="bg-white shadow-sm rounded-xl p-6">
           <TaskInput />
           <TaskList />
