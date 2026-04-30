@@ -9,6 +9,7 @@ export default function CategoryDetail() {
   const { categories, addMemoToCategory, removeMemoFromCategory } = useFlowStore();
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
 
   if (!name) return null;
 
@@ -17,6 +18,11 @@ export default function CategoryDetail() {
   );
 
   if (!category) return <p>Category not found</p>;
+
+  // 검색 필터
+  const filteredMemos = category.memos.filter((m) =>
+    m.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <motion.div
@@ -37,18 +43,33 @@ export default function CategoryDetail() {
         <h1 className="text-3xl font-semibold text-[#3F4A3F] mb-1">
           {category.name}
         </h1>
-        <p className="text-sm text-gray-400 mb-6">
+        <p className="text-sm text-gray-400 mb-4">
           {category.memos.length} items
         </p>
+
+        {/* 검색창 */}
+        <div className="mb-4">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search memos... 🔍"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#6BAF7C] text-sm"
+          />
+        </div>
 
         <div className="bg-white shadow-sm rounded-xl p-6 mb-4">
           {category.memos.length === 0 ? (
             <p className="text-center text-gray-400 text-sm">
               No memos yet. Add something below!
             </p>
+          ) : filteredMemos.length === 0 ? (
+            <p className="text-center text-gray-400 text-sm">
+              No memos found for "{search}"
+            </p>
           ) : (
             <ul className="space-y-3">
-              {category.memos.map((m, i) => (
+              {filteredMemos.map((m, i) => (
                 <li
                   key={i}
                   className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100"
