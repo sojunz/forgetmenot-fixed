@@ -18,11 +18,14 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import { useThemeStore } from "./store/themeStore";
+import Diary from "./pages/Diary";
+import { useDiaryStore } from "./store/diaryStore";
 
 
 function AnimatedRoutes() {
   const location = useLocation();
   const { token } = useAuthStore();
+  
 
   if (!token) {
     return (
@@ -48,6 +51,7 @@ function AnimatedRoutes() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/leave" element={<Leave />} />
         <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/diary" element={<Diary />} />
       </Routes>
     </AnimatePresence>
   );
@@ -59,6 +63,7 @@ export default function App() {
   const { fetchTasks } = useTaskStore();
   const { fetchCategories } = useFlowStore();
   const { fetchItems } = useLeaveStore();
+  const { fetchDiaries } = useDiaryStore();
   const { isDark } = useThemeStore();
 
   useEffect(() => {
@@ -76,6 +81,7 @@ export default function App() {
       fetchTasks();
       fetchCategories();
       fetchItems();
+      fetchDiaries();
     }
   }, [token]);
 

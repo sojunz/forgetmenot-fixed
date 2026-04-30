@@ -6,6 +6,7 @@ const navItems = [
   { name: "Tasks", path: "/tasks", icon: "✅" },
   { name: "Flow", path: "/flow", icon: "🌿" },
   { name: "Leave", path: "/leave", icon: "🚪" },
+  { name: "Diary", path: "/diary", icon: "🌸" },
   { name: "Settings", path: "/settings", icon: "⚙️" },
 ];
 
