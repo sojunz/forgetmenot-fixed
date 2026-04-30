@@ -6,8 +6,10 @@ import { useTaskStore } from "../store/taskStore";
 import { useLeaveStore } from "../store/leaveStore";
 import { useAuthStore } from "../store/authStore";
 import { useNotificationStore } from "../store/notificationStore";
+import { useThemeStore } from "../store/themeStore";
 
 export default function Settings() {
+  const { isDark, toggleDark } = useThemeStore();
   const { memos } = useMemoStore();
   const { tasks } = useTaskStore();
   const { items } = useLeaveStore();
@@ -153,20 +155,25 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* 앱 정보 */}
-        <div className="bg-white shadow-sm rounded-xl p-6 mb-4">
-          <p className="text-[#3F4A3F] font-medium mb-3">App Info</p>
-          <div className="flex flex-col gap-2 text-sm text-gray-400">
-            <div className="flex justify-between">
-              <span>Version</span>
-              <span>1.0.0</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Theme</span>
-              <span>Natural Green 🌿</span>
-            </div>
-          </div>
-        </div>
+     {/* 테마 설정 */}
+<div className="bg-white shadow-sm rounded-xl p-6 mb-4 flex justify-between items-center">
+  <div>
+    <p className="text-[#3F4A3F] font-medium">Dark Mode 🌙</p>
+    <p className="text-sm text-gray-400">Switch to dark theme</p>
+  </div>
+  <button
+    onClick={toggleDark}
+    className={`w-12 h-6 rounded-full transition-colors duration-300 ${
+      isDark ? "bg-[#6BAF7C]" : "bg-gray-300"
+    } relative`}
+  >
+    <span
+      className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all duration-300 ${
+        isDark ? "left-7" : "left-1"
+      }`}
+    />
+  </button>
+</div>
 
         {/* 데이터 초기화 */}
         <div className="bg-white shadow-sm rounded-xl p-6 mb-4">

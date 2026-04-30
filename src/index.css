@@ -2,5 +2,12 @@
 
 body {
   font-family: "Nunito", sans-serif;
+  background-color: #F3F8F4;
+  color: #3F4A3F;
+  transition: background-color 0.3s, color 0.3s;
 }
 
+body.dark {
+  background-color: #1a1f1a;
+  color: #e0ede0;
+}

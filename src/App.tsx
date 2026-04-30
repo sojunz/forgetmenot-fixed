@@ -17,6 +17,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import { useThemeStore } from "./store/themeStore";
 
 
 function AnimatedRoutes() {
@@ -58,6 +59,15 @@ export default function App() {
   const { fetchTasks } = useTaskStore();
   const { fetchCategories } = useFlowStore();
   const { fetchItems } = useLeaveStore();
+  const { isDark } = useThemeStore();
+
+  useEffect(() => {
+    if (isDark) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [isDark]);
 
   // 로그인 후 한번만 fetch
   useEffect(() => {
